@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio - Wahyu Pratama</title>
-    
-    <meta name="google-site-verification" content="DvDvOnIXooeoTojFQoAeIChM9G48I535wyUU3fAtb7Q" />
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -2205,59 +2202,10 @@
                 <h2><i class="fas fa-laptop-code"></i> Projects Saya</h2>
                 <p>Beberapa project terbaik yang telah saya kerjakan</p>
             </div>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
+            <div class="projects-grid" id="projectsGrid">
+                <div class="project-card" id="projectsLoading">
                     <div class="project-content">
-                        <h3>E-Commerce Platform</h3>
-                        <p>Platform e-commerce modern dengan React.js dan Node.js, dilengkapi sistem pembayaran terintegrasi.</p>
-                        <div class="project-tech">
-                            <span><i class="fab fa-react"></i> React</span>
-                            <span><i class="fab fa-node-js"></i> Node.js</span>
-                            <span><i class="fas fa-database"></i> MongoDB</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="btn-link"><i class="fas fa-eye"></i> Live Demo</a>
-                            <a href="#" class="btn-link"><i class="fab fa-github"></i> GitHub</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Data Analytics Dashboard</h3>
-                        <p>Dashboard analisis data interaktif menggunakan Python dan visualization libraries untuk business intelligence.</p>
-                        <div class="project-tech">
-                            <span><i class="fab fa-python"></i> Python</span>
-                            <span><i class="fas fa-chart-bar"></i> Plotly</span>
-                            <span><i class="fas fa-table"></i> Pandas</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="btn-link"><i class="fas fa-eye"></i> Live Demo</a>
-                            <a href="#" class="btn-link"><i class="fab fa-github"></i> GitHub</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Mobile-First Web App</h3>
-                        <p>Aplikasi web responsive dengan pendekatan mobile-first menggunakan Vite.js dan modern CSS frameworks.</p>
-                        <div class="project-tech">
-                            <span><i class="fas fa-bolt"></i> Vite</span>
-                            <span><i class="fab fa-css3-alt"></i> CSS3</span>
-                            <span><i class="fab fa-js"></i> JavaScript</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="btn-link"><i class="fas fa-eye"></i> Live Demo</a>
-                            <a href="#" class="btn-link"><i class="fab fa-github"></i> GitHub</a>
-                        </div>
+                        <p>Memuat project...</p>
                     </div>
                 </div>
             </div>
@@ -3419,5 +3367,5 @@ Terima kasih.`;
 
 </script>
 
-</body>
+\n<script type="module">\n  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";\n  import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";\n\n  const firebaseConfig = {\n    apiKey: "AIzaSyDikUqNXkRbe95_qiuer11dgsh6wvP_LmA",\n    authDomain: "protofoliwahyu.firebaseapp.com",\n    projectId: "protofoliwahyu",\n    storageBucket: "protofoliwahyu.firebasestorage.app",\n    messagingSenderId: "595296167838",\n    appId: "1:595296167838:web:703ed6d0cada480303188f",\n    measurementId: "G-XGCZEYQE13"\n  };\n\n  const app = initializeApp(firebaseConfig);\n  const db = getFirestore(app);\n  const projectsGrid = document.getElementById("projectsGrid");\n\n  function escapeText(value) {\n    return String(value ?? "").replace(/[&<>\\\"]/g, (char) => ({\n      "&": "&amp;", "<": "&lt;", ">": "&gt;", '\"': "&quot;"\n    }[char]));\n  }\n\n  function safeUrl(value) {\n    const url = String(value ?? "").trim();\n    if (!url) return "#";\n    try {\n      const parsed = new URL(url, window.location.origin);\n      if (!["http:", "https:"].includes(parsed.protocol)) return "#";\n      return parsed.href;\n    } catch {\n      return "#";\n    }\n  }\n\n  function iconFor(category) {\n    const text = String(category ?? "").toLowerCase();\n    if (text.includes("data") || text.includes("analytics")) return "fa-chart-line";\n    if (text.includes("mobile")) return "fa-mobile-alt";\n    if (text.includes("e-commerce") || text.includes("commerce") || text.includes("shop")) return "fa-shopping-cart";\n    return "fa-laptop-code";\n  }\n\n  function renderProjects(projects) {\n    if (!projects.length) {\n      projectsGrid.innerHTML = `\n        <div class="project-card">\n          <div class="project-content">\n            <h3>Belum ada project</h3>\n            <p>Project akan muncul di sini setelah ditambahkan dari dashboard admin.</p>\n          </div>\n        </div>`;\n      return;\n    }\n\n    projectsGrid.innerHTML = projects.map((project) => {\n      const title = escapeText(project.title || "Tanpa judul");\n      const description = escapeText(project.description || "");\n      const category = escapeText(project.category || "Project");\n      const link = safeUrl(project.link);\n      const image = safeUrl(project.image);\n      const imageHtml = project.image\n        ? `<img src="${image}" alt="${title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">`\n        : `<i class="fas ${iconFor(project.category)}"></i>`;\n\n      return `\n        <div class="project-card">\n          <div class="project-image">${imageHtml}</div>\n          <div class="project-content">\n            <h3>${title}</h3>\n            <p>${description}</p>\n            <div class="project-tech">\n              <span><i class="fas fa-tag"></i> ${category}</span>\n            </div>\n            <div class="project-links">\n              ${project.link ? `<a href="${link}" class="btn-link" target="_blank" rel="noopener noreferrer"><i class="fas fa-eye"></i> Lihat Project</a>` : ""}\n            </div>\n          </div>\n        </div>`;\n    }).join("");\n  }\n\n  async function loadProjectsFromFirebase() {\n    try {\n      const projectsQuery = query(collection(db, "projects"), orderBy("createdAt", "desc"));\n      const snapshot = await getDocs(projectsQuery);\n      const projects = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));\n      renderProjects(projects);\n    } catch (error) {\n      console.error("Gagal memuat project dari Firebase:", error);\n      projectsGrid.innerHTML = `\n        <div class="project-card">\n          <div class="project-content">\n            <h3>Project belum dapat dimuat</h3>\n            <p>Silakan coba lagi beberapa saat.</p>\n          </div>\n        </div>`;\n    }\n  }\n\n  loadProjectsFromFirebase();\n</script>\n</body>
 </html>
