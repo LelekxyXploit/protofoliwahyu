@@ -50,8 +50,8 @@
 
     main {
       width: 100%;
-      max-width: 900px;
-      margin: 40px auto;
+      max-width: 1000px;
+      margin: 30px auto;
       padding: 0 20px;
     }
 
@@ -64,7 +64,7 @@
     }
 
     .card h2 {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     .email {
@@ -81,6 +81,150 @@
       text-align: center;
       padding: 50px 20px;
       color: #6b7280;
+    }
+
+    form {
+      display: grid;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 11px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #saveButton {
+      background: #2563eb;
+      color: white;
+    }
+
+    #saveButton:hover {
+      background: #1d4ed8;
+    }
+
+    #cancelButton {
+      background: #6b7280;
+      color: white;
+      display: none;
+    }
+
+    .project-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .project-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .project-item h3 {
+      margin-bottom: 8px;
+    }
+
+    .project-category {
+      display: inline-block;
+      background: #e5e7eb;
+      color: #374151;
+      padding: 4px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .project-description {
+      color: #6b7280;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .project-image {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .project-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .edit-button {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .delete-button {
+      background: #ef4444;
+      color: white;
+    }
+
+    .project-link {
+      background: #111827;
+      color: white;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: inline-block;
+      font-size: 14px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 30px;
+      color: #6b7280;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
     }
   </style>
 </head>
@@ -121,12 +265,91 @@
       </div>
 
       <div class="card">
-        <h2>Panel Admin</h2>
 
-        <p class="welcome">
-          Area ini nantinya bisa kita gunakan untuk mengelola
-          konten website kamu.
-        </p>
+        <h2 id="formTitle">Tambah Project</h2>
+
+        <div id="message" class="message"></div>
+
+        <form id="projectForm">
+
+          <div>
+            <label for="title">Judul Project</label>
+            <input
+              type="text"
+              id="title"
+              placeholder="Contoh: E-Commerce Platform"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="description">Deskripsi</label>
+            <textarea
+              id="description"
+              placeholder="Deskripsi project..."
+              required
+            ></textarea>
+          </div>
+
+          <div>
+            <label for="category">Kategori</label>
+            <select id="category" required>
+              <option value="">Pilih kategori</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Data Analytics">Data Analytics</option>
+              <option value="Mobile App">Mobile App</option>
+              <option value="UI/UX Design">UI/UX Design</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="image">URL Gambar</label>
+            <input
+              type="url"
+              id="image"
+              placeholder="https://..."
+            >
+          </div>
+
+          <div>
+            <label for="projectUrl">URL Project</label>
+            <input
+              type="url"
+              id="projectUrl"
+              placeholder="https://..."
+            >
+          </div>
+
+          <div class="form-buttons">
+
+            <button type="submit" id="saveButton">
+              Tambah Project
+            </button>
+
+            <button
+              type="button"
+              id="cancelButton"
+            >
+              Batal Edit
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+      <div class="card">
+
+        <h2>Daftar Projects</h2>
+
+        <div id="projectList" class="project-list">
+          <div class="loading">
+            Memuat projects...
+          </div>
+        </div>
+
       </div>
 
     </section>
@@ -145,8 +368,22 @@
       signOut
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      updateDoc,
+      deleteDoc,
+      doc,
+      serverTimestamp,
+      query,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
 
     // Firebase configuration
+
     const firebaseConfig = {
       apiKey: "AIzaSyDikUqNXkRbe95_qiuer11dgsh6wvP_LmA",
       authDomain: "protofoliwahyu.firebaseapp.com",
@@ -159,32 +396,466 @@
 
 
     // Initialize Firebase
+
     const app = initializeApp(firebaseConfig);
 
     const auth = getAuth(app);
 
+    const db = getFirestore(app);
+
+
+    // Elements
 
     const loading = document.getElementById("loading");
+
     const dashboard = document.getElementById("dashboard");
+
     const adminEmail = document.getElementById("adminEmail");
+
     const logoutButton = document.getElementById("logoutButton");
 
+    const projectForm = document.getElementById("projectForm");
 
-    // Cek status login
-    onAuthStateChanged(auth, (user) => {
+    const projectList = document.getElementById("projectList");
+
+    const saveButton = document.getElementById("saveButton");
+
+    const cancelButton = document.getElementById("cancelButton");
+
+    const formTitle = document.getElementById("formTitle");
+
+    const message = document.getElementById("message");
+
+
+    let editingProjectId = null;
+
+
+    // Escape HTML
+
+    function escapeHTML(value) {
+
+      if (!value) return "";
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    // Message
+
+    function showMessage(text, type) {
+
+      message.textContent = text;
+
+      message.className = "message " + type;
+
+      message.style.display = "block";
+
+      setTimeout(() => {
+
+        message.style.display = "none";
+
+      }, 3000);
+
+    }
+
+
+    // Load projects
+
+    async function loadProjects() {
+
+      projectList.innerHTML = `
+        <div class="loading">
+          Memuat projects...
+        </div>
+      `;
+
+      try {
+
+        const projectsRef = collection(db, "projects");
+
+        const projectsQuery = query(
+          projectsRef,
+          orderBy("createdAt", "desc")
+        );
+
+        const snapshot = await getDocs(projectsQuery);
+
+        if (snapshot.empty) {
+
+          projectList.innerHTML = `
+            <div class="empty">
+              Belum ada project.
+            </div>
+          `;
+
+          return;
+        }
+
+
+        projectList.innerHTML = "";
+
+
+        snapshot.forEach((projectDoc) => {
+
+          const project = projectDoc.data();
+
+          const item = document.createElement("div");
+
+          item.className = "project-item";
+
+          item.innerHTML = `
+
+            ${
+              project.image
+                ? `
+                  <img
+                    class="project-image"
+                    src="${escapeHTML(project.image)}"
+                    alt="${escapeHTML(project.title)}"
+                  >
+                `
+                : ""
+            }
+
+            <span class="project-category">
+              ${escapeHTML(project.category || "Other")}
+            </span>
+
+            <h3>
+              ${escapeHTML(project.title || "Tanpa Judul")}
+            </h3>
+
+            <p class="project-description">
+              ${escapeHTML(project.description || "")}
+            </p>
+
+            <div class="project-actions">
+
+              <button
+                class="edit-button"
+                data-id="${projectDoc.id}"
+              >
+                Edit
+              </button>
+
+              <button
+                class="delete-button"
+                data-id="${projectDoc.id}"
+              >
+                Hapus
+              </button>
+
+              ${
+                project.projectUrl
+                  ? `
+                    <a
+                      class="project-link"
+                      href="${escapeHTML(project.projectUrl)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Lihat Project
+                    </a>
+                  `
+                  : ""
+              }
+
+            </div>
+          `;
+
+
+          // Edit
+
+          item
+            .querySelector(".edit-button")
+            .addEventListener("click", () => {
+
+              startEdit(projectDoc.id, project);
+
+            });
+
+
+          // Delete
+
+          item
+            .querySelector(".delete-button")
+            .addEventListener("click", () => {
+
+              deleteProject(projectDoc.id);
+
+            });
+
+
+          projectList.appendChild(item);
+
+        });
+
+
+      } catch (error) {
+
+        console.error("Gagal memuat projects:", error);
+
+        projectList.innerHTML = `
+          <div class="empty">
+            Gagal memuat projects.
+            <br><br>
+            ${escapeHTML(error.message)}
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    // Add / Edit project
+
+    projectForm.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+
+      const title =
+        document.getElementById("title").value.trim();
+
+      const description =
+        document.getElementById("description").value.trim();
+
+      const category =
+        document.getElementById("category").value;
+
+      const image =
+        document.getElementById("image").value.trim();
+
+      const projectUrl =
+        document.getElementById("projectUrl").value.trim();
+
+
+      saveButton.disabled = true;
+
+      saveButton.textContent = "Menyimpan...";
+
+
+      try {
+
+        const projectData = {
+
+          title,
+
+          description,
+
+          category,
+
+          image,
+
+          projectUrl
+
+        };
+
+
+        if (editingProjectId) {
+
+          const projectRef =
+            doc(db, "projects", editingProjectId);
+
+          await updateDoc(
+            projectRef,
+            projectData
+          );
+
+          showMessage(
+            "Project berhasil diperbarui.",
+            "success"
+          );
+
+
+        } else {
+
+          await addDoc(
+            collection(db, "projects"),
+            {
+              ...projectData,
+              createdAt: serverTimestamp()
+            }
+          );
+
+          showMessage(
+            "Project berhasil ditambahkan.",
+            "success"
+          );
+
+        }
+
+
+        resetForm();
+
+        await loadProjects();
+
+
+      } catch (error) {
+
+        console.error(
+          "Gagal menyimpan project:",
+          error
+        );
+
+        showMessage(
+          "Gagal menyimpan project: " + error.message,
+          "error"
+        );
+
+      }
+
+
+      saveButton.disabled = false;
+
+      saveButton.textContent =
+        editingProjectId
+          ? "Simpan Perubahan"
+          : "Tambah Project";
+
+    });
+
+
+    // Start edit
+
+    function startEdit(id, project) {
+
+      editingProjectId = id;
+
+      document.getElementById("title").value =
+        project.title || "";
+
+      document.getElementById("description").value =
+        project.description || "";
+
+      document.getElementById("category").value =
+        project.category || "";
+
+      document.getElementById("image").value =
+        project.image || "";
+
+      document.getElementById("projectUrl").value =
+        project.projectUrl || "";
+
+
+      formTitle.textContent = "Edit Project";
+
+      saveButton.textContent =
+        "Simpan Perubahan";
+
+      cancelButton.style.display =
+        "inline-block";
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    // Reset form
+
+    function resetForm() {
+
+      editingProjectId = null;
+
+      projectForm.reset();
+
+      formTitle.textContent =
+        "Tambah Project";
+
+      saveButton.textContent =
+        "Tambah Project";
+
+      cancelButton.style.display =
+        "none";
+
+    }
+
+
+    // Cancel edit
+
+    cancelButton.addEventListener(
+      "click",
+      resetForm
+    );
+
+
+    // Delete project
+
+    async function deleteProject(id) {
+
+      const confirmed =
+        confirm(
+          "Yakin ingin menghapus project ini?"
+        );
+
+
+      if (!confirmed) return;
+
+
+      try {
+
+        await deleteDoc(
+          doc(db, "projects", id)
+        );
+
+        showMessage(
+          "Project berhasil dihapus.",
+          "success"
+        );
+
+        await loadProjects();
+
+
+      } catch (error) {
+
+        console.error(
+          "Gagal menghapus project:",
+          error
+        );
+
+        showMessage(
+          "Gagal menghapus project: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+
+
+    // Authentication
+
+    onAuthStateChanged(auth, async (user) => {
 
       if (user) {
 
-        // User sudah login
-        adminEmail.textContent = user.email;
+        adminEmail.textContent =
+          user.email;
 
-        loading.style.display = "none";
-        dashboard.style.display = "block";
+        loading.style.display =
+          "none";
+
+        dashboard.style.display =
+          "block";
+
+        await loadProjects();
 
       } else {
 
-        // User belum login
-        window.location.href = "/admin.html";
+        window.location.href =
+          "/admin.html";
 
       }
 
@@ -192,23 +863,33 @@
 
 
     // Logout
-    logoutButton.addEventListener("click", async () => {
 
-      try {
+    logoutButton.addEventListener(
+      "click",
+      async () => {
 
-        await signOut(auth);
+        try {
 
-        window.location.href = "/admin.html";
+          await signOut(auth);
 
-      } catch (error) {
+          window.location.href =
+            "/admin.html";
 
-        console.error("Logout gagal:", error);
+        } catch (error) {
 
-        alert("Logout gagal. Silakan coba lagi.");
+          console.error(
+            "Logout gagal:",
+            error
+          );
+
+          alert(
+            "Logout gagal. Silakan coba lagi."
+          );
+
+        }
 
       }
-
-    });
+    );
 
   </script>
 
