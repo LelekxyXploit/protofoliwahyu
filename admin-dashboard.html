@@ -3,318 +3,214 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Projects</title>
+
+  <title>Admin Dashboard - Portfolio Wahyu</title>
+
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Arial,sans-serif;background:#f4f7fb;color:#1f2937;min-height:100vh}
-    header{background:#111827;color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-    header h1{font-size:20px}
-    .logout{border:0;background:#ef4444;color:#fff;padding:10px 15px;border-radius:8px;font-weight:700;cursor:pointer}
-    main{max-width:1100px;margin:32px auto;padding:0 20px}
-    .card{background:#fff;border-radius:15px;padding:24px;box-shadow:0 8px 30px rgba(0,0,0,.07);margin-bottom:20px}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}
-    .top h2{font-size:22px}
-    .add{border:0;background:#2563eb;color:#fff;padding:11px 16px;border-radius:9px;font-weight:700;cursor:pointer}
-    .email{color:#2563eb;font-weight:700;margin-top:6px}
-    .project{border:1px solid #e5e7eb;border-radius:12px;padding:18px;margin-top:14px}
-    .project-head{display:flex;justify-content:space-between;gap:15px}
-    .project h3{margin-bottom:7px}
-    .project p{color:#6b7280;line-height:1.5}
-    .category{display:inline-block;margin-top:10px;background:#eef2ff;color:#3730a3;padding:5px 9px;border-radius:999px;font-size:12px}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .actions button{border:0;padding:8px 12px;border-radius:7px;cursor:pointer;font-weight:600}
-    .edit{background:#e0f2fe;color:#075985}
-    .delete{background:#fee2e2;color:#991b1b}
-    .empty{color:#6b7280;padding:20px 0;text-align:center}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:20px}
-    .modal.show{display:flex}
-    .modal-box{width:100%;max-width:520px;background:#fff;border-radius:15px;padding:25px}
-    .modal-box h2{margin-bottom:18px}
-    label{display:block;font-weight:700;margin:13px 0 7px}
-    input,textarea{width:100%;padding:11px 12px;border:1px solid #d1d5db;border-radius:9px;font:inherit}
-    textarea{min-height:100px;resize:vertical}
-    .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
-    .cancel,.save{border:0;padding:10px 15px;border-radius:8px;font-weight:700;cursor:pointer}
-    .cancel{background:#e5e7eb;color:#374151}.save{background:#2563eb;color:#fff}
-    .status{margin-top:12px;font-size:14px;min-height:20px}
-    @media(max-width:650px){.project-head{flex-direction:column}.top{align-items:flex-start;flex-direction:column}.actions{width:100%}}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 18px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    header h1 {
+      font-size: 20px;
+    }
+
+    #logoutButton {
+      border: none;
+      background: #ef4444;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #logoutButton:hover {
+      background: #dc2626;
+    }
+
+    main {
+      width: 100%;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+    }
+
+    .email {
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    .welcome {
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px 20px;
+      color: #6b7280;
+    }
   </style>
 </head>
+
 <body>
-<header>
-  <h1>Admin Dashboard — Projects</h1>
-  <button class="logout" id="logoutButton">Logout</button>
-</header>
 
-<main>
-  <section class="card">
-    <div>
-      <strong>Admin:</strong>
-      <div class="email" id="adminEmail">Memeriksa login...</div>
+  <header>
+    <h1>Admin Dashboard</h1>
+
+    <button id="logoutButton">
+      Logout
+    </button>
+  </header>
+
+  <main>
+
+    <div id="loading" class="loading">
+      Memeriksa login...
     </div>
-  </section>
 
-  <section class="card">
-    <div class="top">
-      <h2>Projects Saya</h2>
-      <button class="add" id="addButton">+ Tambah Project</button>
-    </div>
-    <div id="projectsList">
-      <div class="empty">Memuat project...</div>
-    </div>
-  </section>
-</main>
+    <section id="dashboard" style="display: none;">
 
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h2 id="modalTitle">Tambah Project</h2>
-    <form id="projectForm">
-      <label for="title">Nama Project</label>
-      <input id="title" required placeholder="Contoh: E-Commerce Platform">
+      <div class="card">
+        <h2>Selamat datang 👋</h2>
 
-      <label for="description">Deskripsi</label>
-      <textarea id="description" required placeholder="Deskripsi singkat project"></textarea>
-
-      <label for="category">Kategori</label>
-      <input id="category" placeholder="Contoh: Web Development">
-
-      <label for="image">URL Gambar (opsional)</label>
-      <input id="image" type="url" placeholder="https://...">
-
-      <label for="link">URL Project (opsional)</label>
-      <input id="link" type="url" placeholder="https://...">
-
-      <div class="status" id="formStatus"></div>
-      <div class="modal-actions">
-        <button type="button" class="cancel" id="cancelButton">Batal</button>
-        <button type="submit" class="save" id="saveButton">Simpan</button>
+        <p class="welcome">
+          Kamu berhasil masuk ke halaman admin website.
+        </p>
       </div>
-    </form>
-  </div>
-</div>
 
-<script type="module">
-  import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+      <div class="card">
+        <h2>Akun Admin</h2>
 
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+        <p>
+          Login sebagai:
+          <span id="adminEmail" class="email"></span>
+        </p>
+      </div>
 
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    getDocs,
-    doc,
-    updateDoc,
-    deleteDoc,
-    orderBy,
-    query,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+      <div class="card">
+        <h2>Panel Admin</h2>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDikUqNXkRbe95_qiuer11dgsh6wvP_LmA",
-    authDomain: "protofoliwahyu.firebaseapp.com",
-    projectId: "protofoliwahyu",
-    storageBucket: "protofoliwahyu.firebasestorage.app",
-    messagingSenderId: "595296167838",
-    appId: "1:595296167838:web:703ed6d0cada480303188f",
-    measurementId: "G-XGCZEYQE13"
-  };
+        <p class="welcome">
+          Area ini nantinya bisa kita gunakan untuk mengelola
+          konten website kamu.
+        </p>
+      </div>
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    </section>
 
-  const projectsList = document.getElementById("projectsList");
-  const adminEmail = document.getElementById("adminEmail");
-  const modal = document.getElementById("modal");
-  const modalTitle = document.getElementById("modalTitle");
-  const projectForm = document.getElementById("projectForm");
-  const formStatus = document.getElementById("formStatus");
-  const saveButton = document.getElementById("saveButton");
+  </main>
 
-  let editingId = null;
 
-  // Login protection.
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = "/admin.html";
-      return;
-    }
-    adminEmail.textContent = user.email;
-    await loadProjects();
-  });
+  <script type="module">
 
-  async function loadProjects() {
-    projectsList.innerHTML = '<div class="empty">Memuat project...</div>';
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 
-    try {
-      const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-      if (snapshot.empty) {
-        projectsList.innerHTML = '<div class="empty">Belum ada project di Firebase. Klik "+ Tambah Project".</div>';
-        return;
-      }
 
-      projectsList.innerHTML = "";
-
-      snapshot.forEach((item) => {
-        const p = item.data();
-
-        const wrapper = document.createElement("article");
-        wrapper.className = "project";
-
-        const head = document.createElement("div");
-        head.className = "project-head";
-
-        const info = document.createElement("div");
-
-        const title = document.createElement("h3");
-        title.textContent = p.title || "Tanpa judul";
-
-        const desc = document.createElement("p");
-        desc.textContent = p.description || "";
-
-        info.appendChild(title);
-        info.appendChild(desc);
-
-        if (p.category) {
-          const category = document.createElement("span");
-          category.className = "category";
-          category.textContent = p.category;
-          info.appendChild(category);
-        }
-
-        const actions = document.createElement("div");
-        actions.className = "actions";
-
-        const edit = document.createElement("button");
-        edit.className = "edit";
-        edit.textContent = "Edit";
-        edit.addEventListener("click", () => openEdit(item.id, p));
-
-        const del = document.createElement("button");
-        del.className = "delete";
-        del.textContent = "Hapus";
-        del.addEventListener("click", () => removeProject(item.id, p.title));
-
-        actions.appendChild(edit);
-        actions.appendChild(del);
-
-        head.appendChild(info);
-        head.appendChild(actions);
-        wrapper.appendChild(head);
-        projectsList.appendChild(wrapper);
-      });
-
-    } catch (error) {
-      console.error(error);
-      projectsList.innerHTML =
-        '<div class="empty">Gagal membaca Firebase. Pastikan Firestore Database sudah dibuat dan rules mengizinkan admin.</div>';
-    }
-  }
-
-  document.getElementById("addButton").addEventListener("click", () => {
-    editingId = null;
-    modalTitle.textContent = "Tambah Project";
-    projectForm.reset();
-    formStatus.textContent = "";
-    modal.classList.add("show");
-  });
-
-  function openEdit(id, project) {
-    editingId = id;
-    modalTitle.textContent = "Edit Project";
-    document.getElementById("title").value = project.title || "";
-    document.getElementById("description").value = project.description || "";
-    document.getElementById("category").value = project.category || "";
-    document.getElementById("image").value = project.image || "";
-    document.getElementById("link").value = project.link || "";
-    formStatus.textContent = "";
-    modal.classList.add("show");
-  }
-
-  document.getElementById("cancelButton").addEventListener("click", closeModal);
-
-  modal.addEventListener("click", (event) => {
-    if (event.target === modal) closeModal();
-  });
-
-  function closeModal() {
-    modal.classList.remove("show");
-    editingId = null;
-    projectForm.reset();
-  }
-
-  projectForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const data = {
-      title: document.getElementById("title").value.trim(),
-      description: document.getElementById("description").value.trim(),
-      category: document.getElementById("category").value.trim(),
-      image: document.getElementById("image").value.trim(),
-      link: document.getElementById("link").value.trim()
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDikUqNXkRbe95_qiuer11dgsh6wvP_LmA",
+      authDomain: "protofoliwahyu.firebaseapp.com",
+      projectId: "protofoliwahyu",
+      storageBucket: "protofoliwahyu.firebasestorage.app",
+      messagingSenderId: "595296167838",
+      appId: "1:595296167838:web:703ed6d0cada480303188f",
+      measurementId: "G-XGCZEYQE13"
     };
 
-    if (!data.title || !data.description) {
-      formStatus.textContent = "Nama project dan deskripsi wajib diisi.";
-      return;
-    }
 
-    saveButton.disabled = true;
-    saveButton.textContent = "Menyimpan...";
-    formStatus.textContent = "";
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
 
-    try {
-      if (editingId) {
-        await updateDoc(doc(db, "projects", editingId), data);
+    const auth = getAuth(app);
+
+
+    const loading = document.getElementById("loading");
+    const dashboard = document.getElementById("dashboard");
+    const adminEmail = document.getElementById("adminEmail");
+    const logoutButton = document.getElementById("logoutButton");
+
+
+    // Cek status login
+    onAuthStateChanged(auth, (user) => {
+
+      if (user) {
+
+        // User sudah login
+        adminEmail.textContent = user.email;
+
+        loading.style.display = "none";
+        dashboard.style.display = "block";
+
       } else {
-        await addDoc(collection(db, "projects"), {
-          ...data,
-          createdAt: serverTimestamp()
-        });
+
+        // User belum login
+        window.location.href = "/admin.html";
+
       }
 
-      closeModal();
-      await loadProjects();
+    });
 
-    } catch (error) {
-      console.error(error);
-      formStatus.textContent =
-        "Gagal menyimpan. Pastikan Firestore Database sudah dibuat dan rules sudah benar.";
-    } finally {
-      saveButton.disabled = false;
-      saveButton.textContent = "Simpan";
-    }
-  });
 
-  async function removeProject(id, title) {
-    const confirmed = confirm(
-      'Hapus project "' + (title || "ini") + '"? Tindakan ini tidak dapat dibatalkan.'
-    );
+    // Logout
+    logoutButton.addEventListener("click", async () => {
 
-    if (!confirmed) return;
+      try {
 
-    try {
-      await deleteDoc(doc(db, "projects", id));
-      await loadProjects();
-    } catch (error) {
-      console.error(error);
-      alert("Gagal menghapus project. Pastikan Firestore rules mengizinkan operasi admin.");
-    }
-  }
+        await signOut(auth);
 
-  document.getElementById("logoutButton").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "/admin.html";
-  });
-</script>
+        window.location.href = "/admin.html";
+
+      } catch (error) {
+
+        console.error("Logout gagal:", error);
+
+        alert("Logout gagal. Silakan coba lagi.");
+
+      }
+
+    });
+
+  </script>
+
 </body>
 </html>
