@@ -3561,3 +3561,68 @@ Terima kasih.`;
 
   loadProjectsFromFirebase();
 </script>
+
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfigHome = {
+    apiKey: "AIzaSyDikUqNXKre95_qiuer11dgsh6wvP_LmA",
+    authDomain: "protofoliwahyu.firebaseapp.com",
+    projectId: "protofoliwahyu",
+    storageBucket: "protofoliwahyu.firebasestorage.app",
+    messagingSenderId: "595296167838",
+    appId: "1:595296167838:web:703ed6d0cada480303188f",
+    measurementId: "G-XGCZEYQE13"
+  };
+
+  const appHome = initializeApp(firebaseConfigHome);
+  const dbHome = getFirestore(appHome);
+
+  async function loadHomeFromFirebase() {
+    try {
+      const homeRef = doc(dbHome, "siteContent", "home");
+      const homeSnap = await getDoc(homeRef);
+
+      if (!homeSnap.exists()) {
+        console.log("Data Home belum tersedia.");
+        return;
+      }
+
+      const data = homeSnap.data();
+
+      const homeSection = document.querySelector("#home");
+
+      if (!homeSection) return;
+
+      // Nama
+      const homeName = homeSection.querySelector(
+        ".home-text h1 .highlight"
+      );
+
+      if (homeName && data.name) {
+        homeName.textContent = data.name;
+      }
+
+      // Foto profil
+      const homeImage = homeSection.querySelector(
+        ".home-image .profile-img img"
+      );
+
+      if (homeImage && data.image) {
+        homeImage.src = data.image;
+      }
+
+      console.log("Home berhasil dimuat dari Firebase.");
+
+    } catch (error) {
+      console.error("Gagal memuat Home dari Firebase:", error);
+    }
+  }
+
+  loadHomeFromFirebase();
+</script>
